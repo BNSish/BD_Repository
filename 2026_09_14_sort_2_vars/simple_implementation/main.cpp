@@ -1,5 +1,7 @@
 #include <iostream>
 
+static void print_array(const char* comment, const int* arr, int size);
+
 static void my_sort(int *arr, int size);
 
 int main() {
@@ -18,22 +20,22 @@ int main() {
 		std::cin >> arr[i];
 	}
 
-	std::cout << "Первоначальный массив: ";
-	for (int i = 0; i < size; ++i) {
-		std::cout << arr[i] << " ";
-	}
-	std::cout << std::endl;
+	print_array("Первоначальный массив: ", arr, size);
 
 	my_sort(arr, size);
 
-	std::cout << "Отсортированный массив: ";
+	print_array("Отсортированный массив: ", arr, size);
+
+	delete[] arr;
+	return 0;
+}
+
+void print_array(const char* const comment, const int* arr, const int size) {
+	std::cout << comment << std::endl;
 	for (int i = 0; i < size; ++i) {
 		std::cout << arr[i] << " ";
 	}
 	std::cout << std::endl;
-
-	delete[] arr;
-	return 0;
 }
 
 void my_sort(int *arr, const int size) {

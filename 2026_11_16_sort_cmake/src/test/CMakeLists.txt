@@ -9,6 +9,7 @@ foreach (
         test_comb_sort
         test_selection_sort
         test_insertion_sort
+        test_insertion_sort_binary_search
         test_shell_sort
 )
     add_executable(${name} ${name}.cpp)

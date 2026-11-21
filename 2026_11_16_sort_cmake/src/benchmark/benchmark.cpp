@@ -25,16 +25,16 @@ static void checkSpeed(const char* name, void (*sort)(int*, int), const int* arr
 	const auto copy = new int[len];
 	std::copy_n(arr, len, copy);
 
-	const auto start = std::chrono::steady_clock::now();
+	const auto start = std::chrono::high_resolution_clock::now();
 	sort(copy, len);
-	const auto end = std::chrono::steady_clock::now();
-	const std::chrono::duration<double, std::milli> time = end - start;
+	const auto end = std::chrono::high_resolution_clock::now();
+	const std::chrono::duration<double> sec = end - start;
 
 	if (!isSorted(copy, len)) {
 		std::cout << "ERROR: сортировка " << name << " не прошла тест!" << std::endl;
 	}
 	else {
-		std::cout << std::format("| {:^50} | {:^6} | {:^8.2f} |", name, len, time.count()) << std::endl;
+		std::cout << std::format("| {:^52} | {:^6} | {:^8.4f} |", name, len, sec.count()) << std::endl;
 	}
 
 	delete[] copy;
@@ -60,7 +60,8 @@ static void run(const int* arr, const int len) {
 
 	checkSpeed("Сортировка выборкой", selectionSort, arr, len);
 
-	checkSpeed("Сортировка вставками", insertionSort, arr, len);
+	checkSpeed("Сортировка вставками (классическая)", insertionSort, arr, len);
+	checkSpeed("Сортировка вставками (оптимизация бинарным поиском)", insertionSort, arr, len);
 
 	checkSpeed("Сортировка Шелла", shellSort, arr, len);
 }

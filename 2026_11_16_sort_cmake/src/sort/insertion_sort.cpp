@@ -19,7 +19,7 @@ void insertionSortBinarySearch(int* arr, const int len) {
 		int right = 0;
 		int left = i - 1;
 		while (right < left) {
-			const int mid = (right + left) / 2;
+			const int mid = right + (left - right) / 2;
 			if (x < arr[mid]) {
 				left = mid;
 			}

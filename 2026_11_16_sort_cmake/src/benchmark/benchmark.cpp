@@ -11,6 +11,9 @@
 #include "selection_sort.hpp"
 #include "insertion_sort.hpp"
 #include "shell_sort.hpp"
+#include "heap_sort.hpp"
+#include "quick_sort.hpp"
+#include "merge_sort.hpp"
 
 static bool isSorted(const int* arr, const int len) {
 	for (int i = 0; i < len - 1; ++i) {
@@ -21,22 +24,44 @@ static bool isSorted(const int* arr, const int len) {
 	return true;
 }
 
-static void checkSpeed(const char* name, void (*sort)(int*, int), const int* arr, const int len) {
-	const auto copy = new int[len];
-	std::copy_n(arr, len, copy);
-
-	const auto start = std::chrono::high_resolution_clock::now();
-	sort(copy, len);
-	const auto end = std::chrono::high_resolution_clock::now();
-	const std::chrono::duration<double> sec = end - start;
-
-	if (!isSorted(copy, len)) {
+static void reportResult(const char* name, const int* arr, const int len, const std::chrono::duration<double> sec) {
+	if (!isSorted(arr, len)) {
 		std::cout << "ERROR: сортировка " << name << " не прошла тест!" << std::endl;
 	}
 	else {
 		std::cout << std::format("| {:^52} | {:^6} | {:^8.4f} |", name, len, sec.count()) << std::endl;
 	}
+}
 
+static void checkSpeed(const char* name, void (*sort)(int*, int), const int* arr, const int len) {
+	const auto copy = new int[len];
+	std::copy_n(arr, len, copy);
+	const auto start = std::chrono::high_resolution_clock::now();
+	sort(copy, len);
+	const auto end = std::chrono::high_resolution_clock::now();
+	reportResult(name, copy, len, end - start);
+	delete[] copy;
+}
+
+static void checkSpeed(const char* name, void (*sort)(int*, int, int), const int* arr, const int len) {
+	const auto copy = new int[len];
+	std::copy_n(arr, len, copy);
+	const auto start = std::chrono::high_resolution_clock::now();
+	sort(copy, 0, len);
+	const auto end = std::chrono::high_resolution_clock::now();
+	reportResult(name, copy, len, end - start);
+	delete[] copy;
+}
+
+static void checkSpeed(const char* name, void (*sort)(int*, int*, int, int), const int* arr, const int len) {
+	const auto copy = new int[len];
+	std::copy_n(arr, len, copy);
+	const auto start = std::chrono::high_resolution_clock::now();
+	const auto buf = new int[len];
+	sort(copy, buf, 0, len);
+	delete[] buf;
+	const auto end = std::chrono::high_resolution_clock::now();
+	reportResult(name, copy, len, end - start);
 	delete[] copy;
 }
 
@@ -61,9 +86,15 @@ static void run(const int* arr, const int len) {
 	checkSpeed("Сортировка выборкой", selectionSort, arr, len);
 
 	checkSpeed("Сортировка вставками (классическая)", insertionSort, arr, len);
-	checkSpeed("Сортировка вставками (оптимизация бинарным поиском)", insertionSort, arr, len);
+	checkSpeed("Сортировка вставками (оптимизация бинарным поиском)", insertionSortBinarySearch, arr, len);
 
 	checkSpeed("Сортировка Шелла", shellSort, arr, len);
+
+	checkSpeed("Пирамидальная сортировка", heapSort, arr, len);
+
+	checkSpeed("Быстрая сортировка", quickSort, arr, len);
+
+	checkSpeed("Сортировка слиянием", mergeSort, arr, len);
 }
 
 int main() {
